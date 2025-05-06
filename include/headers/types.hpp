@@ -7,7 +7,6 @@ namespace pc_club {
 enum class ID { _1, _2, _3, _4, _11, _12, _13 };
 using Comp_desks_num = uint16_t;
 using Hourly_rate = uint16_t;
-// using ID = uint8_t;
 using Client_name = std::string;
 
 struct Time {
@@ -27,11 +26,9 @@ struct Notice {
 };
 
 struct Client {
-  // Client_name name;
   Time start_time;
   Time end_time;
   Comp_desks_num table_number = 0;
-  Hourly_rate money_paid = 0;
   bool isFree = true;
 };
 

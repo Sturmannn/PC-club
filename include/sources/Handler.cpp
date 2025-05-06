@@ -18,11 +18,6 @@ void pc_club::Handler::handle_file(void) {
 
   // Handling the second input line
   if (fm.read_line(read_string)) {
-
-    // if (!isTime(read_string)) {
-    //   std::cout << read_string << std::endl;
-    //   return;
-    // }
     std::vector<std::string> tokens = split(read_string, " ");
     if (tokens.size() != 2 || !isTime(tokens[0]) || !isTime(tokens[1])) {
       std::cout << read_string << std::endl;
@@ -54,24 +49,35 @@ void pc_club::Handler::handle_file(void) {
     Notice notice = getNotice(read_string);
     switch (notice.id) {
     case ID::_1:
-      if(!Handle_ID_1(notice)) return;
+      if (!Handle_ID_1(notice))
+        return;
       break;
     case ID::_2:
-      if(!Handle_ID_2(notice)) return;
+      if (!Handle_ID_2(notice))
+        return;
       break;
     case ID::_3:
-      if(!Handle_ID_3(notice)) return;
+      if (!Handle_ID_3(notice))
+        return;
       break;
     case ID::_4:
-      if(!Handle_ID_4(notice)) return;
+      if (!Handle_ID_4(notice))
+        return;
       break;
     default:
       break;
     }
-    // if (!(notice.time <= pc_db.getPreviosTime())) {
-    //   std::cout << read_string << std::endl;
-    //   return;
-    // }
+  }
+  Handle_ID_11();
+  std::cout << pc_db.getClosingTime() << std::endl;
+
+  uint16_t count_of_desks = pc_db.getCountOfDesks();
+  uint16_t hourly_rate_per_desk = 0;
+  Time time_of_work;
+  for (uint16_t i = 0; i < count_of_desks; ++i) {
+    pc_db.getTableProceed(i + 1, hourly_rate_per_desk, time_of_work);
+    std::cout << i + 1 << ' ' << hourly_rate_per_desk << ' ' << time_of_work
+              << std::endl;
   }
 }
 
@@ -287,7 +293,8 @@ bool pc_club::Handler::Handle_ID_3(const Notice &note) {
 
   if (!pc_db.isAllDesksBusy()) {
     std::cout << fm.get_last_read_line() << std::endl;
-    std::cout << note.time << ' ' << 13 << ' ' << "ICanWaitNoLonger!" << std::endl;
+    std::cout << note.time << ' ' << 13 << ' ' << "ICanWaitNoLonger!"
+              << std::endl;
     return true;
   }
 
@@ -316,10 +323,27 @@ bool pc_club::Handler::Handle_ID_4(const Notice &note) {
   }
 
   pc_db.payUp(note.client_name, note.time);
+  pc_db.freeDesk(note.client_name);
   pc_db.removeClient(note.client_name);
-  pc_db.freeDesk(note.num_of_desk);
 
-  pc_db.popQueue(note.time, note.num_of_desk);
+  std::cout << fm.get_last_read_line() << std::endl;
+
+  std::string popName = pc_db.popQueue(note.time);
+  if (!popName.empty())
+    std::cout << note.time << ' ' << 12 << ' ' << popName << ' '
+              << pc_db.getClientDesk(popName) << std::endl;
 
   return true;
+}
+
+void pc_club::Handler::Handle_ID_11(void) {
+  std::vector<std::string> clients = pc_db.getAlphabetClients();
+  Time end_of_work = pc_db.getClosingTime();
+
+  for (auto &client : clients) {
+    pc_db.payUp(client, end_of_work);
+    pc_db.freeDesk(client);
+    pc_db.removeClient(client);
+    std::cout << end_of_work << ' ' << 11 << ' ' << client << std::endl;
+  }
 }

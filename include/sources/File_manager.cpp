@@ -26,8 +26,3 @@ bool pc_club::File_manager::isFileValid(const std::string &file_path) {
 std::string &pc_club::File_manager::get_last_read_line(void) {
   return last_read_line;
 }
-
-pc_club::File_manager::~File_manager() {
-  if (ifs.is_open())
-    ifs.close();
-}

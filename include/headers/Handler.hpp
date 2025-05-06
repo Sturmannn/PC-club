@@ -28,6 +28,8 @@ public:
   bool isNotice(const std::string& string) const;
   Notice getNotice(const std::string &string) const;
 
+  ~Handler() = default;
+
 private:
 
   
@@ -37,6 +39,7 @@ private:
   bool Handle_ID_2(const Notice &note);
   bool Handle_ID_3(const Notice &note);
   bool Handle_ID_4(const Notice &note);
+  void Handle_ID_11(void);
 
   File_manager fm;
   Data pc_db;
