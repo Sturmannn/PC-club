@@ -30,6 +30,7 @@ git submodule update --init --recursive
 1. Создайте отдельную директорию для сборки:
 
 ```bash
+cd PC-club
 mkdir build
 cd build
 ```
